@@ -61,6 +61,9 @@ NEXTAUTH_URL=http://localhost:3000
 6. Replace `<password>` in that string with your actual password (URL-encode special characters).
 7. Paste the result into `MONGODB_URI` in `.env.local`.
 
+**If you get "bad auth : authentication failed"**, your password likely has special characters (`$`, `%`). Use separate env vars instead — add to `.env.local`:
+`MONGODB_USER=your_username`, `MONGODB_PASSWORD=your_raw_password`, `MONGODB_CLUSTER=yourcluster.vyjvmsk.mongodb.net` (your cluster hostname from the connection string). The app will URL-encode the password for you.
+
 ---
 
 ## 3. Notion setup

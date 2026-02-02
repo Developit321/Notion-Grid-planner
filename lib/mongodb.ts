@@ -1,7 +1,12 @@
-import { MongoClient, Db } from "mongodb";
+import { MongoClient, Db, ServerApiVersion } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const options = {};
+const options = {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+};
 
 let client: MongoClient | null = null;
 let clientPromise: Promise<MongoClient> | null = null;
@@ -10,15 +15,48 @@ declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
+/** Build MongoDB URI from env. Supports full MONGODB_URI or separate user/password/cluster (password is URL-encoded for you). */
+function getMongoUri(): string {
+  const fullUri = process.env.MONGODB_URI;
+  if (fullUri && fullUri.trim()) {
+    console.log("[MongoDB] Using MONGODB_URI (full connection string)");
+    // Extract username and cluster from URI for logging (without password)
+    try {
+      const match = fullUri.match(/mongodb\+srv:\/\/([^:]+):([^@]+)@([^/]+)/);
+      if (match) {
+        console.log("[MongoDB] Username:", match[1]);
+        console.log("[MongoDB] Cluster:", match[3]);
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+    return fullUri.trim();
+  }
+  const user = process.env.MONGODB_USER;
+  const password = process.env.MONGODB_PASSWORD;
+  const cluster = process.env.MONGODB_CLUSTER; // e.g. pedocluster.vyjvmsk.mongodb.net
+  const dbName = process.env.MONGODB_DB_NAME || "instagram_grid_planner";
+  if (user && password && cluster) {
+    console.log("[MongoDB] Using separate env vars (MONGODB_USER/PASSWORD/CLUSTER)");
+    console.log("[MongoDB] Username:", user);
+    console.log("[MongoDB] Cluster:", cluster);
+    const encodedUser = encodeURIComponent(user);
+    const encodedPassword = encodeURIComponent(password);
+    return `mongodb+srv://${encodedUser}:${encodedPassword}@${cluster}/${dbName}?retryWrites=true&w=majority`;
+  }
+  return "";
+}
+
 function getClientPromise(): Promise<MongoClient> {
+  const uri = getMongoUri();
   console.log("[MongoDB] getClientPromise called");
   console.log("[MongoDB] NODE_ENV:", process.env.NODE_ENV);
   console.log("[MongoDB] URI exists:", !!uri);
-  console.log("[MongoDB] URI starts with:", uri ? uri.substring(0, 20) + "..." : "N/A");
-  
+  console.log("[MongoDB] URI starts with:", uri ? uri.substring(0, 25) + "..." : "N/A");
+
   if (!uri) {
-    console.error("[MongoDB] ERROR: MONGODB_URI is not set");
-    throw new Error("Please add your MongoDB URI to .env.local");
+    console.error("[MongoDB] ERROR: Set MONGODB_URI, or MONGODB_USER + MONGODB_PASSWORD + MONGODB_CLUSTER in .env.local");
+    throw new Error("Please add your MongoDB URI (or user/password/cluster) to .env.local");
   }
 
   if (process.env.NODE_ENV === "development") {

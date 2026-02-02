@@ -59,7 +59,7 @@ export default function HelpPage() {
 
         <section className="help-section">
           <h2>Part 2: Set Up Your Notion Database</h2>
-          <p>Your database must have these properties. Names must match exactly.</p>
+          <p>Your database must have these properties. Names and types must match. For Select and Status, add the options listed below.</p>
           <div className="help-table-wrap">
             <table className="help-table">
               <thead>
@@ -67,6 +67,7 @@ export default function HelpPage() {
                   <th>Property name</th>
                   <th>Type in Notion</th>
                   <th>Required</th>
+                  <th>What to add / Options</th>
                 </tr>
               </thead>
               <tbody>
@@ -74,52 +75,74 @@ export default function HelpPage() {
                   <td><strong>Name</strong></td>
                   <td>Title</td>
                   <td>Yes</td>
+                  <td>Post title (e.g. &quot;Week 1 Post&quot;). One title per row.</td>
                 </tr>
                 <tr>
                   <td><strong>files</strong></td>
                   <td>Files &amp; media</td>
                   <td>Yes</td>
+                  <td>Upload one or more images or videos per row. Multiple files = carousel in the grid. Use lowercase <strong>files</strong>.</td>
                 </tr>
                 <tr>
                   <td><strong>Status</strong></td>
-                  <td>Status</td>
+                  <td><strong>Status</strong> (not Select)</td>
                   <td>No</td>
+                  <td>Add status options in Notion, e.g. <strong>Planned</strong>, <strong>Scheduled</strong>, <strong>Posted</strong>. You can set colors in Notion; the widget shows them as colored badges.</td>
                 </tr>
                 <tr>
                   <td><strong>Caption</strong></td>
                   <td>Text</td>
                   <td>No</td>
+                  <td>Optional caption or description. Shown in the preview when you click a post.</td>
                 </tr>
                 <tr>
                   <td><strong>Order</strong></td>
                   <td>Number</td>
                   <td>No</td>
+                  <td>Numbers like 1, 2, 3… to control the order of posts in the grid. Lower numbers appear first.</td>
                 </tr>
                 <tr>
                   <td><strong>Pinned</strong></td>
                   <td>Checkbox</td>
                   <td>No</td>
+                  <td>Check the box to pin a post. No options to add.</td>
                 </tr>
                 <tr>
                   <td><strong>platform</strong></td>
-                  <td>Select</td>
+                  <td><strong>Select</strong></td>
                   <td>No</td>
+                  <td>Add exactly these two options: <strong>instagram</strong> and <strong>tiktok</strong> (lowercase). Use &quot;instagram&quot; for 4:5 grid posts, &quot;tiktok&quot; for 9:16 vertical posts. Name must be lowercase <strong>platform</strong>.</td>
                 </tr>
                 <tr>
                   <td><strong>Source</strong></td>
                   <td>URL or Text</td>
                   <td>No</td>
+                  <td>Link or text (e.g. Canva link). Shown as a clickable &quot;Source&quot; link in the preview overlay. No options to add.</td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <div className="help-callout">
+            <h3>Quick reference: Select &amp; Status</h3>
+            <ul>
+              <li><strong>Status</strong> — In Notion, use property type <strong>Status</strong>. Add options such as Planned, Scheduled, Posted (and set colors if you like). Do not use &quot;Select&quot; for Status.</li>
+              <li><strong>platform</strong> — In Notion, use property type <strong>Select</strong>. Add only these two options: <strong>instagram</strong> and <strong>tiktok</strong>. Spelling and lowercase matter for the widget to recognize them.</li>
+            </ul>
+            <div className="help-status-image">
+              <p className="help-image-caption">Example: <strong>Status</strong> property in Notion with options like &quot;planned&quot;, &quot;In progress&quot;, and &quot;posted&quot; organized into categories</p>
+              <img src="/images/statusfield.png" alt="Notion Status property: Status type with options planned, In progress, and posted" className="help-screenshot" />
+            </div>
+            <div className="help-platform-image">
+              <p className="help-image-caption">Example: <strong>platform</strong> property in Notion with Options &quot;instagram&quot; and &quot;tiktok&quot;</p>
+              <img src="/images/platformfield.png" alt="Notion platform property: Select type with options instagram and tiktok" className="help-screenshot" />
+            </div>
+          </div>
           <p className="help-note">
             <strong>Tips:</strong>
             <ul style={{ marginTop: "8px", paddingLeft: "20px" }}>
-              <li>Use <strong>files</strong> (lowercase) for images and videos. Multiple files in one row create a carousel.</li>
-              <li>Use <strong>Status</strong> type (not Select) for colored status badges. Options like &quot;planned&quot;, &quot;posted&quot; will show with different colors.</li>
-              <li>Use <strong>platform</strong> (lowercase) with options &quot;instagram&quot; or &quot;tiktok&quot; to toggle between views in the widget.</li>
-              <li>Add <strong>Source</strong> (URL or Text) to show a source link when viewing images/videos in the preview.</li>
+              <li>Property names are case-sensitive: <strong>files</strong> and <strong>platform</strong> must be lowercase.</li>
+              <li>Use <strong>Status</strong> (the Status type), not Select, so the widget can show colored badges.</li>
+              <li>For <strong>platform</strong>, if you add only &quot;instagram&quot; and &quot;tiktok&quot;, the widget toggle will work correctly.</li>
             </ul>
           </p>
         </section>

@@ -43,30 +43,36 @@ Your grid is powered by a **Notion database**. The database must have specific p
 
 ### Step 2.2 — Add or rename the required properties
 
-Your database must have these **exact property names** and types. If you already have a database, rename or add properties to match.
+Your database must have these **exact property names** and types. For **Select** and **Status** properties, add the options listed in the last column.
 
-| # | Property name in Notion | Type in Notion      | Required | Notes |
-|---|--------------------------|---------------------|----------|--------|
-| 1 | **Name**                 | Title               | Yes      | Post title (e.g. "Week 1 Post") |
-| 2 | **files**                | Files & media       | Yes      | One or more images or videos per row. Multiple files = carousel in the grid. |
-| 3 | **Status**               | Status              | No       | Use Notion's Status type (not Select). Options like "planned", "posted" will display with colored badges matching Notion's status colors. |
-| 4 | **Caption**              | Text                | No       | Caption or description. |
-| 5 | **Order**                | Number              | No       | Number to control grid order (1, 2, 3…). |
-| 6 | **Pinned**               | Checkbox            | No       | Check to pin a post to the top of the grid. |
-| 7 | **platform**             | Select              | No       | "instagram" or "tiktok" (lowercase). Default is "instagram". Toggle in the widget to switch between Instagram (4:5 grid) and TikTok (9:16 grid) views. |
-| 8 | **Source**               | URL or Text         | No       | Link to source (e.g. Canva, external URL). Shows as a clickable link in the preview overlay when viewing images/videos. |
+| # | Property name in Notion | Type in Notion      | Required | What to add / Options |
+|---|--------------------------|---------------------|----------|------------------------|
+| 1 | **Name**                 | Title               | Yes      | Post title (e.g. "Week 1 Post"). One title per row. |
+| 2 | **files**                | Files & media       | Yes      | Upload one or more images or videos per row. Multiple files = carousel. Use lowercase **files**. |
+| 3 | **Status**               | **Status** (not Select) | No   | Add status options in Notion, e.g. **Planned**, **Scheduled**, **Posted**. Set colors in Notion; the widget shows them as colored badges. Do not use "Select" for Status. |
+| 4 | **Caption**              | Text                | No       | Optional caption or description. Shown in the preview when you click a post. |
+| 5 | **Order**                | Number              | No       | Numbers like 1, 2, 3… to control grid order. Lower numbers appear first. |
+| 6 | **Pinned**               | Checkbox            | No       | Check the box to pin a post. No options to add. |
+| 7 | **platform**             | **Select**          | No       | Add exactly these two options: **instagram** and **tiktok** (lowercase). Use "instagram" for 4:5 grid, "tiktok" for 9:16 vertical. Name must be lowercase **platform**. |
+| 8 | **Source**               | URL or Text         | No       | Link or text (e.g. Canva link). Shown as a clickable "Source" link in the preview. No options to add. |
+
+**Quick reference — Select & Status:**
+- **Status** — Use Notion property type **Status** (not Select). Add options such as Planned, Scheduled, Posted; set colors in Notion if you like.
+- **platform** — Use Notion property type **Select**. Add only these two options: **instagram** and **tiktok**. Spelling and lowercase matter.
 
 **Important:**  
 - **Name** and **files** must exist.  
-- The name **files** is lowercase, **platform** is lowercase.  
+- **files** and **platform** must be lowercase.  
 - Use **Status** type (not Select) for colored status badges.  
 - **Status**, **Caption**, **Order**, **Pinned**, **platform**, and **Source** are optional but recommended.
 
 ### Step 2.3 — How to add or change a property
 
 1. In the database, click the **+** at the right of the column headers (or the **⋯** on a column).
-2. To **add** a property: choose the type (e.g. **Files & media**, **Select**, **Number**, **Checkbox**, **Text**) and name it exactly as in the table above.
-3. To **rename**: click the current name and type the exact name from the table.
+2. To **add** a property: choose the type (e.g. **Files & media**, **Select**, **Status**, **Number**, **Checkbox**, **Text**) and name it exactly as in the table above.
+3. For **Status**: use the **Status** type (not Select). Click the property, then add options (e.g. Planned, Scheduled, Posted) and set colors if you like.
+4. For **platform**: use the **Select** type. After creating it, add exactly two options: **instagram** and **tiktok** (lowercase).
+5. To **rename**: click the current name and type the exact name from the table.
 
 ### Step 2.4 — Fill in a few rows
 
@@ -207,16 +213,16 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 
 ## Quick reference: Database fields
 
-| Notion property | Type          | Required |
-|-----------------|---------------|----------|
-| Name            | Title         | Yes      |
-| files           | Files & media | Yes      |
-| Status          | Status        | No       |
-| Caption         | Text          | No       |
-| Order           | Number        | No       |
-| Pinned          | Checkbox      | No       |
-| platform        | Select        | No       |
-| Source          | URL or Text   | No       |
+| Notion property | Type          | Required | Options to add |
+|-----------------|---------------|----------|-----------------|
+| Name            | Title         | Yes      | —               |
+| files           | Files & media | Yes      | —               |
+| Status          | **Status** (not Select) | No | e.g. Planned, Scheduled, Posted |
+| Caption         | Text          | No       | —               |
+| Order           | Number        | No       | —               |
+| Pinned          | Checkbox      | No       | —               |
+| platform        | **Select**    | No       | **instagram**, **tiktok** (exactly these two, lowercase) |
+| Source          | URL or Text   | No       | —               |
 
 ---
 
