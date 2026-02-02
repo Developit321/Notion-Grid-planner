@@ -1,8 +1,8 @@
-// File: /Users/cookiemonster/Documents/React-app/Cuddles-CMS/Insta_grid/app/help/page.tsx
-import * as entry from '../../../../app/help/page.js'
+// File: /Users/cookiemonster/Documents/React-app/Cuddles-CMS/Insta_grid/app/signup/page.tsx
+import * as entry from '../../../../app/signup/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../app/help/page.js')
+type TEntry = typeof import('../../../../app/signup/page.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
