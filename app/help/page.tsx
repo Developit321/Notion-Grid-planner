@@ -78,10 +78,16 @@ export default function HelpPage() {
                   <td>Post title (e.g. &quot;Week 1 Post&quot;). One title per row.</td>
                 </tr>
                 <tr>
-                  <td><strong>files</strong></td>
+                  <td><strong>Files</strong></td>
                   <td>Files &amp; media</td>
                   <td>Yes</td>
-                  <td>Upload one or more images or videos per row. Multiple files = carousel in the grid. Use lowercase <strong>files</strong>.</td>
+                  <td>Upload one or more images or videos per row. Multiple files = carousel in the grid.</td>
+                </tr>
+                <tr>
+                  <td><strong>Date</strong></td>
+                  <td>Date</td>
+                  <td>Yes</td>
+                  <td>Date field for chronological sorting. Posts are sorted by date (most recent first). When you manually reorder posts, their dates are automatically updated.</td>
                 </tr>
                 <tr>
                   <td><strong>Status</strong></td>
@@ -96,22 +102,16 @@ export default function HelpPage() {
                   <td>Optional caption or description. Shown in the preview when you click a post.</td>
                 </tr>
                 <tr>
-                  <td><strong>Order</strong></td>
-                  <td>Number</td>
+                  <td><strong>Pinned Placement</strong></td>
+                  <td><strong>Multi-select</strong></td>
                   <td>No</td>
-                  <td>Numbers like 1, 2, 3… to control the order of posts in the grid. Lower numbers appear first.</td>
+                  <td>Add exactly three options: <strong>1</strong>, <strong>2</strong>, <strong>3</strong> (as strings). Posts with these values appear pinned in the first row. Only posts in the first row can be pinned. Pinned posts cannot be moved.</td>
                 </tr>
                 <tr>
-                  <td><strong>Pinned</strong></td>
-                  <td>Checkbox</td>
-                  <td>No</td>
-                  <td>Check the box to pin a post. No options to add.</td>
-                </tr>
-                <tr>
-                  <td><strong>platform</strong></td>
+                  <td><strong>Platform</strong></td>
                   <td><strong>Select</strong></td>
                   <td>No</td>
-                  <td>Add exactly these two options: <strong>instagram</strong> and <strong>tiktok</strong> (lowercase). Use &quot;instagram&quot; for 4:5 grid posts, &quot;tiktok&quot; for 9:16 vertical posts. Name must be lowercase <strong>platform</strong>.</td>
+                  <td>Add exactly these two options: <strong>instagram</strong> and <strong>tiktok</strong> (lowercase). Use &quot;instagram&quot; for 4:5 grid posts, &quot;tiktok&quot; for 9:16 vertical posts.</td>
                 </tr>
                 <tr>
                   <td><strong>Source</strong></td>
@@ -123,10 +123,11 @@ export default function HelpPage() {
             </table>
           </div>
           <div className="help-callout">
-            <h3>Quick reference: Select &amp; Status</h3>
+            <h3>Quick reference: Property Types</h3>
             <ul>
               <li><strong>Status</strong> — In Notion, use property type <strong>Status</strong>. Add options such as Planned, Scheduled, Posted (and set colors if you like). Do not use &quot;Select&quot; for Status.</li>
-              <li><strong>platform</strong> — In Notion, use property type <strong>Select</strong>. Add only these two options: <strong>instagram</strong> and <strong>tiktok</strong>. Spelling and lowercase matter for the widget to recognize them.</li>
+              <li><strong>Platform</strong> — In Notion, use property type <strong>Select</strong>. Add only these two options: <strong>instagram</strong> and <strong>tiktok</strong> (lowercase). The property name should be <strong>Platform</strong> (capitalized).</li>
+              <li><strong>Pinned Placement</strong> — In Notion, use property type <strong>Multi-select</strong>. Add exactly three options: <strong>1</strong>, <strong>2</strong>, <strong>3</strong> (as strings). Posts with these values appear pinned in the first row.</li>
             </ul>
             <div className="help-status-image">
               <p className="help-image-caption">Example: <strong>Status</strong> property in Notion with options like &quot;planned&quot;, &quot;In progress&quot;, and &quot;posted&quot; organized into categories</p>
@@ -140,9 +141,12 @@ export default function HelpPage() {
           <p className="help-note">
             <strong>Tips:</strong>
             <ul style={{ marginTop: "8px", paddingLeft: "20px" }}>
-              <li>Property names are case-sensitive: <strong>files</strong> and <strong>platform</strong> must be lowercase.</li>
+              <li>All property names start with capital letters: <strong>Name</strong>, <strong>Files</strong>, <strong>Date</strong>, <strong>Status</strong>, <strong>Caption</strong>, <strong>Platform</strong>, <strong>Source</strong>, <strong>Pinned Placement</strong>.</li>
+              <li><strong>Date</strong> is required for chronological sorting. Posts are sorted by date (most recent first).</li>
               <li>Use <strong>Status</strong> (the Status type), not Select, so the widget can show colored badges.</li>
-              <li>For <strong>platform</strong>, if you add only &quot;instagram&quot; and &quot;tiktok&quot;, the widget toggle will work correctly.</li>
+              <li>For <strong>Platform</strong>, add only &quot;instagram&quot; and &quot;tiktok&quot; (lowercase) as options.</li>
+              <li><strong>Pinned Placement</strong> determines which posts appear pinned. Only posts in the first row can be pinned (values 1, 2, or 3).</li>
+              <li>Pinned posts cannot be moved by dragging - they stay fixed in their positions.</li>
             </ul>
           </p>
         </section>
@@ -189,9 +193,12 @@ export default function HelpPage() {
           <h2>Troubleshooting</h2>
           <ul>
             <li><strong>Invalid Notion credentials:</strong> Check that the token is correct and the integration is <strong>connected</strong> to the database (Part 3).</li>
-            <li><strong>Empty grid:</strong> Make sure the database has rows and the <strong>files</strong> property (lowercase) has at least one image or video in some rows.</li>
+            <li><strong>Empty grid:</strong> Make sure the database has rows and the <strong>Files</strong> property has at least one image or video in some rows.</li>
+            <li><strong>Posts not sorting correctly:</strong> Make sure <strong>Date</strong> field is set for all posts. Posts are sorted by date (most recent first).</li>
             <li><strong>Status not showing:</strong> Use the <strong>Status</strong> property type (not Select) in Notion. Status badges will display with colors matching Notion&apos;s status colors.</li>
-            <li><strong>Platform toggle not working:</strong> Make sure <strong>platform</strong> is lowercase and options are exactly &quot;instagram&quot; or &quot;tiktok&quot; (case-insensitive).</li>
+            <li><strong>Platform toggle not working:</strong> Make sure <strong>Platform</strong> property exists and options are exactly &quot;instagram&quot; or &quot;tiktok&quot; (lowercase).</li>
+            <li><strong>Can&apos;t pin posts:</strong> Only posts in the first row can be pinned. Use <strong>Pinned Placement</strong> multi-select with values <strong>1</strong>, <strong>2</strong>, or <strong>3</strong>.</li>
+            <li><strong>Pinned posts can be moved:</strong> Pinned posts should be fixed. Make sure <strong>Pinned Placement</strong> has values 1, 2, or 3 set.</li>
             <li><strong>Integration not in the list:</strong> Create the integration in the same Notion workspace as the database.</li>
           </ul>
         </section>

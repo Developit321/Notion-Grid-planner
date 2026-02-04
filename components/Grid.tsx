@@ -29,7 +29,7 @@ interface GridProps {
   onPinToggle: (post: Post) => void;
 }
 
-export function Grid({ posts, onReorder, onPostClick }: GridProps) {
+export function Grid({ posts, onReorder, onPostClick, onPinToggle }: GridProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -44,6 +44,14 @@ export function Grid({ posts, onReorder, onPostClick }: GridProps) {
   );
 
   const handleDragStart = (event: DragStartEvent) => {
+    // Prevent dragging pinned posts
+    const draggedPost = posts.find((p) => p.id === event.active.id);
+    const isPinned = draggedPost?.pinned || !!draggedPost?.pinnedPlacement;
+    
+    if (isPinned) {
+      return; // Don't allow dragging pinned posts
+    }
+    
     setActiveId(event.active.id as string);
   };
 
@@ -54,6 +62,17 @@ export function Grid({ posts, onReorder, onPostClick }: GridProps) {
     if (over && active.id !== over.id) {
       const oldIndex = posts.findIndex((post) => post.id === active.id);
       const newIndex = posts.findIndex((post) => post.id === over.id);
+      
+      // Prevent dragging into positions occupied by pinned posts
+      if (newIndex < 3) {
+        const targetPost = posts[newIndex];
+        const isTargetPinned = targetPost?.pinned || !!targetPost?.pinnedPlacement;
+        
+        if (isTargetPinned) {
+          // Can't drag into a position occupied by a pinned post
+          return;
+        }
+      }
 
       const reorderedPosts = arrayMove(posts, oldIndex, newIndex).map(
         (post, index) => ({
@@ -77,14 +96,26 @@ export function Grid({ posts, onReorder, onPostClick }: GridProps) {
     >
       <SortableContext items={posts.map((p) => p.id)} strategy={rectSortingStrategy}>
         <div className="instagram-grid">
-          {posts.map((post) => (
-            <GridItem
-              key={post.id}
-              post={post}
-              onClick={() => onPostClick(post)}
-              isDragging={post.id === activeId}
-            />
-          ))}
+          {posts.map((post, index) => {
+            // Instagram grid is 3 columns, so first row is indices 0, 1, 2
+            // Pinned posts have "Pinned Placement" with value 1, 2, or 3 and appear in first row
+            const isInFirstRow = index < 3;
+            const pinnedPlacement = post.pinnedPlacement;
+            const isPinned = post.pinned || !!pinnedPlacement;
+            // Only show pin button on pinned posts in first row
+            const canShowPinButton = isPinned && isInFirstRow;
+            
+            return (
+              <GridItem
+                key={post.id}
+                post={post}
+                onClick={() => onPostClick(post)}
+                onPinToggle={canShowPinButton && onPinToggle ? () => onPinToggle(post) : undefined}
+                isDragging={post.id === activeId}
+                isInFirstRow={isInFirstRow}
+              />
+            );
+          })}
         </div>
       </SortableContext>
 

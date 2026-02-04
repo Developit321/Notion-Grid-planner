@@ -11,4 +11,6 @@ export interface Post {
   pinned: boolean;
   platform: Platform;
   source?: string;
+  date?: string; // ISO date string for chronological sorting
+  pinnedPlacement?: number; // Pinned placement value: 1, 2, or 3 (from "Pinned Placement" multi-select)
 }

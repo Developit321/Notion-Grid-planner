@@ -48,23 +48,25 @@ Your database must have these **exact property names** and types. For **Select**
 | # | Property name in Notion | Type in Notion      | Required | What to add / Options |
 |---|--------------------------|---------------------|----------|------------------------|
 | 1 | **Name**                 | Title               | Yes      | Post title (e.g. "Week 1 Post"). One title per row. |
-| 2 | **files**                | Files & media       | Yes      | Upload one or more images or videos per row. Multiple files = carousel. Use lowercase **files**. |
-| 3 | **Status**               | **Status** (not Select) | No   | Add status options in Notion, e.g. **Planned**, **Scheduled**, **Posted**. Set colors in Notion; the widget shows them as colored badges. Do not use "Select" for Status. |
-| 4 | **Caption**              | Text                | No       | Optional caption or description. Shown in the preview when you click a post. |
-| 5 | **Order**                | Number              | No       | Numbers like 1, 2, 3… to control grid order. Lower numbers appear first. |
-| 6 | **Pinned**               | Checkbox            | No       | Check the box to pin a post. No options to add. |
-| 7 | **platform**             | **Select**          | No       | Add exactly these two options: **instagram** and **tiktok** (lowercase). Use "instagram" for 4:5 grid, "tiktok" for 9:16 vertical. Name must be lowercase **platform**. |
+| 2 | **Files**                | Files & media       | Yes      | Upload one or more images or videos per row. Multiple files = carousel. |
+| 3 | **Date**                 | Date                | Yes      | Date field for chronological sorting. Unpinned posts are sorted by date (most recent first). |
+| 4 | **Status**               | **Status** (not Select) | No   | Add status options in Notion, e.g. **Planned**, **Scheduled**, **Posted**. Set colors in Notion; the widget shows them as colored badges. Do not use "Select" for Status. |
+| 5 | **Caption**              | Text                | No       | Optional caption or description. Shown in the preview when you click a post. |
+| 6 | **Pinned Placement**     | **Multi-select**    | No       | Add exactly three options: **1**, **2**, **3** (as strings). Posts with these values appear pinned in the first row. Only posts in the first row can be pinned. |
+| 7 | **Platform**             | **Select**          | No       | Add exactly these two options: **instagram** and **tiktok** (lowercase). Use "instagram" for 4:5 grid, "tiktok" for 9:16 vertical. |
 | 8 | **Source**               | URL or Text         | No       | Link or text (e.g. Canva link). Shown as a clickable "Source" link in the preview. No options to add. |
 
-**Quick reference — Select & Status:**
+**Quick reference — Property Types:**
 - **Status** — Use Notion property type **Status** (not Select). Add options such as Planned, Scheduled, Posted; set colors in Notion if you like.
-- **platform** — Use Notion property type **Select**. Add only these two options: **instagram** and **tiktok**. Spelling and lowercase matter.
+- **Platform** — Use Notion property type **Select**. Add only these two options: **instagram** and **tiktok** (lowercase). The property name should be **Platform** (capitalized).
+- **Pinned Placement** — Use Notion property type **Multi-select**. Add exactly three options: **1**, **2**, **3** (as strings). Posts with these values appear pinned in the first row.
 
 **Important:**  
-- **Name** and **files** must exist.  
-- **files** and **platform** must be lowercase.  
+- **Name**, **Files**, and **Date** are required.  
+- All property names start with capital letters (Name, Files, Date, Status, Caption, Platform, Source, Pinned Placement).  
 - Use **Status** type (not Select) for colored status badges.  
-- **Status**, **Caption**, **Order**, **Pinned**, **platform**, and **Source** are optional but recommended.
+- **Pinned Placement** determines which posts appear pinned (values 1, 2, or 3 = first row positions).  
+- **Status**, **Caption**, **Platform**, and **Source** are optional but recommended.
 
 ### Step 2.3 — How to add or change a property
 
@@ -77,13 +79,13 @@ Your database must have these **exact property names** and types. For **Select**
 ### Step 2.4 — Fill in a few rows
 
 1. **Name** — type a title for each post.
-2. **files** — click the cell, then **"Upload"** or **"Embed"** to add one or more images or videos. Videos (MP4, WebM, MOV) are supported and will show with hover preview in the grid.
-3. **Status** — use Notion's **Status** property type (not Select). Pick an option like "planned", "posted", etc. Status badges will display with colors matching Notion's status colors.
-4. **Caption** — optional text.
-5. **Order** — optional number (1, 2, 3…) to control order in the grid.
-6. **platform** — choose "instagram" or "tiktok" (lowercase). Default is "instagram". Instagram posts display in a 4:5 aspect ratio grid; TikTok posts display in a 9:16 vertical grid.
-7. **Source** — optional URL or text (e.g. Canva link). Shows as a clickable "Source" link in the preview overlay when viewing images/videos.
-6. **Pinned** — optional; check to keep a post at the top.
+2. **Files** — click the cell, then **"Upload"** or **"Embed"** to add one or more images or videos. Videos (MP4, WebM, MOV) are supported and will show with hover preview in the grid.
+3. **Date** — set a date for each post. Posts are sorted chronologically by date (most recent first). When you manually reorder posts, their dates are automatically updated.
+4. **Status** — use Notion's **Status** property type (not Select). Pick an option like "planned", "posted", etc. Status badges will display with colors matching Notion's status colors.
+5. **Caption** — optional text.
+6. **Pinned Placement** — to pin a post, select **1**, **2**, or **3** from the multi-select. Only posts in the first row (first 3 positions) can be pinned. Pinned posts cannot be moved by dragging.
+7. **Platform** — choose "instagram" or "tiktok" (lowercase). Default is "instagram". Instagram posts display in a 4:5 aspect ratio grid; TikTok posts display in a 9:16 vertical grid.
+8. **Source** — optional URL or text (e.g. Canva link). Shows as a clickable "Source" link in the preview overlay when viewing images/videos.
 
 ---
 
@@ -167,28 +169,17 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 
 ## Features Overview
 
-### Platform Toggle
-- **Instagram view**: 3-column grid with **4:5 aspect ratio** (portrait rectangles) - matches Instagram's 2026 grid format
-- **TikTok view**: 3-column grid with **9:16 aspect ratio** (vertical videos)
-- Toggle between views using the platform buttons at the top of the widget
+### Sorting & Ordering
+- **Chronological sorting**: Posts are sorted by **Date** (most recent first)
+- **Pinned posts**: Posts with **Pinned Placement** values 1, 2, or 3 appear in the first row and are sorted by their placement value
+- **Manual reordering**: Drag and drop posts to reorder them. Their dates are automatically updated to reflect the new order
+- **Pinned posts are fixed**: Pinned posts cannot be moved by dragging - they stay in their assigned positions
 
-### Media Support
-- **Images**: JPG, PNG, GIF, etc.
-- **Videos**: MP4, WebM, MOV, OGG, M4V
-- **Multi-image/video posts**: Multiple files in one row create a carousel (indicated by an icon on the grid item)
-- **Hover preview**: Videos in the grid play on hover (muted)
-
-### Status Colors
-- Status badges display with colors matching Notion's status colors
-- Colors include: gray (default), green, blue, red, orange, yellow, purple, pink, brown
-
-### Source Links
-- Add a **Source** field (URL or Text) to show a clickable source link in the preview overlay
-- Only appears when viewing images/videos in the preview, not in the grid
-
----
-
-## Features Overview
+### Pinning Posts
+- **Pin button**: Hover over the pin icon on pinned posts to see an "Unpin this post?" tooltip
+- **First row only**: Only posts in the first row (first 3 positions) can be pinned
+- **Pinned Placement**: Use the **Pinned Placement** multi-select field with values **1**, **2**, or **3** to pin posts
+- **Unpinning**: Click "Unpin" in the tooltip to remove a post from the pinned positions
 
 ### Platform Toggle
 - **Instagram view**: 3-column grid with **4:5 aspect ratio** (portrait rectangles) - matches Instagram's 2026 grid format
@@ -216,12 +207,12 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 | Notion property | Type          | Required | Options to add |
 |-----------------|---------------|----------|-----------------|
 | Name            | Title         | Yes      | —               |
-| files           | Files & media | Yes      | —               |
+| Files           | Files & media | Yes      | —               |
+| Date            | Date          | Yes      | —               |
 | Status          | **Status** (not Select) | No | e.g. Planned, Scheduled, Posted |
 | Caption         | Text          | No       | —               |
-| Order           | Number        | No       | —               |
-| Pinned          | Checkbox      | No       | —               |
-| platform        | **Select**    | No       | **instagram**, **tiktok** (exactly these two, lowercase) |
+| Pinned Placement| **Multi-select** | No   | **1**, **2**, **3** (exactly these three, as strings) |
+| Platform        | **Select**    | No       | **instagram**, **tiktok** (exactly these two, lowercase) |
 | Source          | URL or Text   | No       | —               |
 
 ---
@@ -231,11 +222,13 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 | Problem | What to check |
 |--------|----------------|
 | "Invalid Notion credentials or database ID" | Token correct? Integration **connected** to the database? Database ID or URL correct? |
-| Grid is empty | Database has rows? **files** property has at least one image or video in some rows? Property names spelled exactly (e.g. **files** lowercase)? |
+| Grid is empty | Database has rows? **Files** property has at least one image or video in some rows? Property names spelled exactly with capital letters? |
+| Posts not sorting correctly | Make sure **Date** field is set for all posts. Posts are sorted by date (most recent first). |
 | Status not showing colors | Use Notion's **Status** property type (not Select). Status badges will display with colors matching Notion's status colors. |
-| Platform toggle not working | Make sure **platform** is lowercase and options are exactly "instagram" or "tiktok" (case-insensitive). |
+| Platform toggle not working | Make sure **Platform** property exists and options are exactly "instagram" or "tiktok" (lowercase). |
 | Source link not showing | Make sure **Source** field has a value. The link only appears in the preview overlay when viewing images/videos, not in the grid. |
-| Wrong order | Add **Order** (number) and set 1, 2, 3…; or drag to reorder in the app if supported. |
+| Can't pin posts | Only posts in the first row can be pinned. Use **Pinned Placement** multi-select with values **1**, **2**, or **3**. |
+| Pinned posts can be moved | Pinned posts should be fixed. Make sure **Pinned Placement** has values 1, 2, or 3 set. |
 | Integration not in "Connections" list | Make sure the integration was created in the **same workspace** as the database. |
 
-If you still have issues, double-check: integration token, database connection, and property names (including **files** and **Name**).
+If you still have issues, double-check: integration token, database connection, and property names (all start with capital letters: **Name**, **Files**, **Date**, etc.).

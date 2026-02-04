@@ -65,13 +65,76 @@ export default function WidgetPage({ params }: WidgetPageProps) {
   };
 
   const handleReorder = async (reorderedPosts: Post[]) => {
-    // For embedded widgets, just update locally (no persistence)
+    // Update locally first for immediate UI feedback
     setPosts(reorderedPosts);
+    
+    // Persist reordering to Notion
+    try {
+      await fetch(`/api/widgets/${id}/reorder`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          posts: reorderedPosts.map((post) => ({
+            id: post.id,
+            order: post.order,
+          })),
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to persist reordering:", error);
+      // Optionally show an error message to the user
+    }
   };
 
   const handlePostClick = (post: Post) => {
     setSelectedPost(post);
     setCurrentImageIndex(0);
+  };
+
+  const handlePinToggle = async (post: Post) => {
+    // Only allow pinning/unpinning posts in the first row (first 3 posts)
+    // This check is also done in the Grid component, but double-check here for safety
+    const filteredPosts = posts.filter((p) => p.platform === activePlatform);
+    const postIndex = filteredPosts.findIndex((p) => p.id === post.id);
+    
+    // Only allow pinning posts in the first row (indices 0, 1, 2)
+    // If unpinning, allow it regardless of position
+    if (!post.pinned && postIndex >= 3) {
+      // Don't allow pinning posts outside the first row
+      return;
+    }
+    
+    const newPinned = !post.pinned;
+    
+    // Update locally first for immediate UI feedback
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => (p.id === post.id ? { ...p, pinned: newPinned } : p))
+    );
+    
+    // Persist pinning to Notion
+    try {
+      const response = await fetch(`/api/widgets/${id}/pin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pageId: post.id,
+          pinned: newPinned,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to update pin state");
+      }
+      
+      // Refresh posts to get the correct order after pinning
+      await fetchPosts();
+    } catch (error) {
+      console.error("Failed to persist pinning:", error);
+      // Revert on error
+      setPosts((prevPosts) =>
+        prevPosts.map((p) => (p.id === post.id ? { ...p, pinned: !newPinned } : p))
+      );
+    }
   };
 
   const closePreview = () => {
@@ -229,13 +292,30 @@ export default function WidgetPage({ params }: WidgetPageProps) {
             ) : (
               <Grid
                 posts={filteredPosts}
-                onReorder={(reordered) => {
+                onReorder={async (reordered) => {
                   // Merge reordered posts with other platform posts
                   const otherPosts = posts.filter((p) => p.platform !== activePlatform);
-                  setPosts([...otherPosts, ...reordered]);
+                  const allReordered = [...otherPosts, ...reordered];
+                  setPosts(allReordered);
+                  
+                  // Persist reordering to Notion (only for the active platform posts)
+                  try {
+                    await fetch(`/api/widgets/${id}/reorder`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        posts: reordered.map((post) => ({
+                          id: post.id,
+                          order: post.order,
+                        })),
+                      }),
+                    });
+                  } catch (error) {
+                    console.error("Failed to persist reordering:", error);
+                  }
                 }}
                 onPostClick={handlePostClick}
-                onPinToggle={() => {}}
+                onPinToggle={handlePinToggle}
               />
             )}
           </div>

@@ -21,6 +21,8 @@ interface NotionPost {
   pinned: boolean;
   platform: Platform;
   source?: string;
+  date?: string; // ISO date string for chronological sorting
+  pinnedPlacement?: number; // Pinned placement value: 1, 2, or 3 (from "Pinned Placement" multi-select)
 }
 
 function getPropertyValue(
@@ -37,12 +39,18 @@ function getPropertyValue(
       return property.rich_text.map((t) => t.plain_text).join("") || "";
     case "select":
       return property.select?.name || "";
+    case "multi_select":
+      // Return array of selected option names
+      return property.multi_select.map((option) => option.name);
     case "status":
       return property.status?.name || "";
     case "number":
       return property.number ?? 0;
     case "checkbox":
       return property.checkbox ?? false;
+    case "date":
+      // Return ISO date string, or null if no date set
+      return property.date?.start || null;
     case "files":
       const urls: string[] = [];
       for (const file of property.files) {
@@ -82,21 +90,40 @@ export async function GET(
     const notion = new Client({ auth: notionToken });
 
     // Query the Notion database
-    const response: QueryDatabaseResponse = await notion.databases.query({
-      database_id: widget.databaseId,
-      sorts: [
-        {
-          property: "Order",
-          direction: "ascending",
-        },
-      ],
-    });
+    // Sort by Date (most recent first) - Date field handles both chronological order and manual reordering
+    let response: QueryDatabaseResponse;
+    try {
+      response = await notion.databases.query({
+        database_id: widget.databaseId,
+        sorts: [
+          {
+            property: "Date",
+            direction: "descending",
+          },
+        ],
+      });
+    } catch (dateError: any) {
+      // If Date property doesn't exist, fall back to Order sorting
+      if (dateError?.code === 'validation_error' && dateError?.body?.includes('Date')) {
+        response = await notion.databases.query({
+          database_id: widget.databaseId,
+          sorts: [
+            {
+              property: "Order",
+              direction: "ascending",
+            },
+          ],
+        });
+      } else {
+        throw dateError;
+      }
+    }
 
     const posts: NotionPost[] = response.results
       .filter((page): page is PageObjectResponse => "properties" in page)
       .map((page, index) => {
         const name = getPropertyValue(page, "Name") as string;
-        const images = (getPropertyValue(page, "files") as string[]) || [];
+        const images = (getPropertyValue(page, "Files") as string[]) || [];
         const propertyKeys = Object.keys(page.properties);
         
         // Read Status directly from property (case-insensitive)
@@ -124,8 +151,14 @@ export async function GET(
         }
         
         const caption = getPropertyValue(page, "Caption") as string;
-        const order = (getPropertyValue(page, "Order") as number) || index + 1;
-        const pinned = (getPropertyValue(page, "Pinned") as boolean) ?? false;
+        const order = (getPropertyValue(page, "Order") as number) || null; // Optional, only for unpinned posts
+        const date = getPropertyValue(page, "Date") as string | null;
+        const pinnedPlacement = (getPropertyValue(page, "Pinned Placement") as string[]) || [];
+        
+        // Check if post has a pinned placement (1, 2, or 3)
+        const pinnedPlacementValue = pinnedPlacement.find((val) => ["1", "2", "3"].includes(val));
+        const isPinned = !!pinnedPlacementValue;
+        const pinnedOrder = pinnedPlacementValue ? parseInt(pinnedPlacementValue, 10) : null;
         
         // Find platform property by checking all property keys (case-insensitive)
         let platformRaw = "";
@@ -135,7 +168,14 @@ export async function GET(
           (key) => key.toLowerCase() === "platform"
         );
         
-        // If not found, try partial match (in case it's "Platform" or has spaces)
+        // If not found, try capitalized "Platform"
+        if (!platformKey) {
+          platformKey = propertyKeys.find(
+            (key) => key === "Platform"
+          );
+        }
+        
+        // If still not found, try partial match
         if (!platformKey) {
           platformKey = propertyKeys.find(
             (key) => key.toLowerCase().includes("platform")
@@ -157,9 +197,16 @@ export async function GET(
         
         // Find source property (case-insensitive) - can be URL or text type
         let source = "";
-        const sourceKey = propertyKeys.find(
-          (key) => key.toLowerCase() === "source"
+        let sourceKey = propertyKeys.find(
+          (key) => key === "Source"
         );
+        
+        // If not found, try lowercase
+        if (!sourceKey) {
+          sourceKey = propertyKeys.find(
+            (key) => key.toLowerCase() === "source"
+          );
+        }
         
         if (sourceKey) {
           const sourceProperty = page.properties[sourceKey];
@@ -184,17 +231,107 @@ export async function GET(
           status: status || "planned",
           statusColor: statusColor || undefined,
           caption: caption || "",
-          order,
-          pinned,
+          order: order || index + 1, // Fallback to index if Order not set
+          pinned: isPinned,
           platform,
           source: source && source.trim() ? source.trim() : undefined,
+          date: date || undefined,
+          pinnedPlacement: pinnedOrder || undefined,
         };
       });
 
-    // Sort: pinned first, then by order
+    // Validate pinned posts: only allow maximum 3 pinned posts with unique placements (1, 2, 3)
+    // If more than 3 posts have Pinned Placement values, or if there are duplicates, fix them
+    const pinnedPostsList = posts.filter((p) => p.pinnedPlacement !== undefined && p.pinnedPlacement >= 1 && p.pinnedPlacement <= 3);
+    
+    // Check for duplicates - each placement (1, 2, 3) should only be used once
+    const placementCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+    pinnedPostsList.forEach((p) => {
+      if (p.pinnedPlacement) {
+        placementCounts[p.pinnedPlacement] = (placementCounts[p.pinnedPlacement] || 0) + 1;
+      }
+    });
+    
+    // If there are more than 3 pinned posts OR duplicates, fix it
+    if (pinnedPostsList.length > 3 || Object.values(placementCounts).some((count) => count > 1)) {
+      console.warn(`Warning: Invalid Pinned Placement configuration detected. Fixing...`);
+      
+      // Sort by Pinned Placement, then by date to determine priority
+      pinnedPostsList.sort((a, b) => {
+        const placementDiff = (a.pinnedPlacement || 999) - (b.pinnedPlacement || 999);
+        if (placementDiff !== 0) return placementDiff;
+        // If same placement, prefer more recent date
+        if (a.date && b.date) {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        }
+        return 0;
+      });
+      
+      // Keep only the first post for each placement (1, 2, 3)
+      const keptPlacements = new Set<number>();
+      const postsToUnpin: typeof pinnedPostsList = [];
+      
+      for (const post of pinnedPostsList) {
+        if (post.pinnedPlacement && !keptPlacements.has(post.pinnedPlacement)) {
+          keptPlacements.add(post.pinnedPlacement);
+        } else {
+          postsToUnpin.push(post);
+        }
+      }
+      
+      // Clear Pinned Placement for duplicates and extras
+      for (const postToUnpin of postsToUnpin) {
+        try {
+          await notion.pages.update({
+            page_id: postToUnpin.id,
+            properties: {
+              "Pinned Placement": {
+                multi_select: [],
+              },
+            },
+          });
+          // Update local post to reflect unpinned state
+          const postIndex = posts.findIndex((p) => p.id === postToUnpin.id);
+          if (postIndex !== -1) {
+            posts[postIndex].pinned = false;
+            posts[postIndex].pinnedPlacement = undefined;
+          }
+        } catch (error) {
+          console.warn(`Failed to clear Pinned Placement for post ${postToUnpin.id}:`, error);
+        }
+      }
+    }
+
+    // Sort: pinned posts first by Pinned Placement (1, 2, 3), then unpinned posts by Date
     posts.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
+      const aPinnedPlacement = a.pinnedPlacement;
+      const bPinnedPlacement = b.pinnedPlacement;
+      const aIsPinned = a.pinned || (aPinnedPlacement !== undefined && aPinnedPlacement >= 1 && aPinnedPlacement <= 3);
+      const bIsPinned = b.pinned || (bPinnedPlacement !== undefined && bPinnedPlacement >= 1 && bPinnedPlacement <= 3);
+      
+      // Pinned posts come first
+      if (aIsPinned && !bIsPinned) return -1;
+      if (!aIsPinned && bIsPinned) return 1;
+      
+      // If both are pinned, sort by Pinned Placement (1, 2, 3)
+      if (aIsPinned && bIsPinned) {
+        const aPlacement = aPinnedPlacement || 999;
+        const bPlacement = bPinnedPlacement || 999;
+        return aPlacement - bPlacement;
+      }
+      
+      // If both are unpinned, sort by Date (most recent first)
+      if (a.date && b.date) {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA; // Descending (most recent first)
+      }
+      
+      // If only one has a date, prioritize it
+      if (a.date && !b.date) return -1;
+      if (!a.date && b.date) return 1;
+      
+      // Fallback to order
       return a.order - b.order;
     });
 
