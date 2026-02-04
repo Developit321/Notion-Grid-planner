@@ -197,7 +197,7 @@ export async function GET(
         
         // Find source property (case-insensitive) - can be URL or text type
         let source = "";
-        let sourceKey = propertyKeys.find(
+        let sourceKey: string | undefined = propertyKeys.find(
           (key) => key === "Source"
         );
         
