@@ -108,7 +108,8 @@ export async function getPosts(): Promise<NotionPost[]> {
       .filter((page): page is PageObjectResponse => "properties" in page)
       .map((page, index) => {
         const name = getPropertyValue(page, "Name") as string;
-        const images = (getPropertyValue(page, "Files") as string[]) || [];
+        // Content (Files & media): supports uploads and embedded links; fallback to "Files" for backward compatibility
+        const images = ((getPropertyValue(page, "Content") ?? getPropertyValue(page, "Files")) as string[]) || [];
         const status = getPropertyValue(page, "Status") as string;
         const caption = getPropertyValue(page, "Caption") as string;
         const order = (getPropertyValue(page, "Order") as number) || null; // Optional, only for unpinned posts

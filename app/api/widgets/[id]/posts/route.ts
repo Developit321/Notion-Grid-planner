@@ -52,6 +52,7 @@ function getPropertyValue(
       // Return ISO date string, or null if no date set
       return property.date?.start || null;
     case "files":
+      // Supports both uploaded files and embedded links (external URLs)
       const urls: string[] = [];
       for (const file of property.files) {
         if (file.type === "file") {
@@ -123,7 +124,8 @@ export async function GET(
       .filter((page): page is PageObjectResponse => "properties" in page)
       .map((page, index) => {
         const name = getPropertyValue(page, "Name") as string;
-        const images = (getPropertyValue(page, "Files") as string[]) || [];
+        // Content (Files & media): supports uploads and embedded links; fallback to "Files" for backward compatibility
+        const images = ((getPropertyValue(page, "Content") ?? getPropertyValue(page, "Files")) as string[]) || [];
         const propertyKeys = Object.keys(page.properties);
         
         // Read Status directly from property (case-insensitive)

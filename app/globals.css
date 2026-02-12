@@ -639,13 +639,19 @@ body {
   opacity: 0.95;
 }
 
-.pin-btn svg {
+.pin-btn svg,
+.pin-btn img.pin-icon {
   width: 18px;
   height: 18px;
+  object-fit: contain;
+}
+
+.pin-btn svg {
   color: #fff;
 }
 
-.pin-btn.pinned svg {
+.pin-btn.pinned svg,
+.pin-btn img.pin-icon {
   color: #fff;
 }
 

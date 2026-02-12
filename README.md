@@ -86,7 +86,7 @@ Your Notion database should have these properties:
 | Property name | Type     | Notes                          |
 |---------------|----------|---------------------------------|
 | **Name**      | Title    | Post name                       |
-| **files**     | Files & media | One or more images or videos per row  |
+| **Content**   | Files & media | One or more images or videos per row (upload or embed link) |
 | **Status**    | Select   | e.g. planned, scheduled, posted |
 | **Caption**   | Text     | Optional                        |
 | **Order**     | Number   | For grid order                  |

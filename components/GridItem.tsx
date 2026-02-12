@@ -118,12 +118,7 @@ export function GridItem({ post, onClick, onPinToggle, isDragging: isDraggingPro
             aria-label="Unpin post"
             title="Unpin post"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              {/* Instagram-style pushpin icon */}
-              <circle cx="12" cy="5.5" r="3.5" />
-              <rect x="9" y="9" width="6" height="2.5" rx="0.5" />
-              <path d="M11.5 11.5 L10.5 20 L13.5 20 L12.5 11.5 Z" />
-            </svg>
+            <img src="/images/pin.png" alt="" className="pin-icon" aria-hidden="true" />
           </button>
           
           {/* Unpin tooltip */}

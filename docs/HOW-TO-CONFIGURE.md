@@ -48,7 +48,7 @@ Your database must have these **exact property names** and types. For **Select**
 | # | Property name in Notion | Type in Notion      | Required | What to add / Options |
 |---|--------------------------|---------------------|----------|------------------------|
 | 1 | **Name**                 | Title               | Yes      | Post title (e.g. "Week 1 Post"). One title per row. |
-| 2 | **Files**                | Files & media       | Yes      | Upload one or more images or videos per row. Multiple files = carousel. |
+| 2 | **Content**               | Files & media       | Yes      | Upload or embed one or more images or videos per row (Upload or Embed link). Multiple items = carousel. |
 | 3 | **Date**                 | Date                | Yes      | Date field for chronological sorting. Unpinned posts are sorted by date (most recent first). |
 | 4 | **Status**               | **Status** (not Select) | No   | Add status options in Notion, e.g. **Planned**, **Scheduled**, **Posted**. Set colors in Notion; the widget shows them as colored badges. Do not use "Select" for Status. |
 | 5 | **Caption**              | Text                | No       | Optional caption or description. Shown in the preview when you click a post. |
@@ -62,8 +62,8 @@ Your database must have these **exact property names** and types. For **Select**
 - **Pinned Placement** — Use Notion property type **Multi-select**. Add exactly three options: **1**, **2**, **3** (as strings). Posts with these values appear pinned in the first row.
 
 **Important:**  
-- **Name**, **Files**, and **Date** are required.  
-- All property names start with capital letters (Name, Files, Date, Status, Caption, Platform, Source, Pinned Placement).  
+- **Name**, **Content**, and **Date** are required.
+- All property names start with capital letters (Name, Content, Date, Status, Caption, Platform, Source, Pinned Placement).
 - Use **Status** type (not Select) for colored status badges.  
 - **Pinned Placement** determines which posts appear pinned (values 1, 2, or 3 = first row positions).  
 - **Status**, **Caption**, **Platform**, and **Source** are optional but recommended.
@@ -79,7 +79,7 @@ Your database must have these **exact property names** and types. For **Select**
 ### Step 2.4 — Fill in a few rows
 
 1. **Name** — type a title for each post.
-2. **Files** — click the cell, then **"Upload"** or **"Embed"** to add one or more images or videos. Videos (MP4, WebM, MOV) are supported and will show with hover preview in the grid.
+2. **Content** — click the cell, then **"Upload"** or **"Embed link"** to add one or more images or videos. Both uploaded files and embedded image URLs are shown in the widget. Videos (MP4, WebM, MOV) are supported and will show with hover preview in the grid.
 3. **Date** — set a date for each post. Posts are sorted chronologically by date (most recent first). When you manually reorder posts, their dates are automatically updated.
 4. **Status** — use Notion's **Status** property type (not Select). Pick an option like "planned", "posted", etc. Status badges will display with colors matching Notion's status colors.
 5. **Caption** — optional text.
@@ -207,7 +207,7 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 | Notion property | Type          | Required | Options to add |
 |-----------------|---------------|----------|-----------------|
 | Name            | Title         | Yes      | —               |
-| Files           | Files & media | Yes      | —               |
+| Content         | Files & media | Yes      | —               |
 | Date            | Date          | Yes      | —               |
 | Status          | **Status** (not Select) | No | e.g. Planned, Scheduled, Posted |
 | Caption         | Text          | No       | —               |
@@ -222,7 +222,7 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 | Problem | What to check |
 |--------|----------------|
 | "Invalid Notion credentials or database ID" | Token correct? Integration **connected** to the database? Database ID or URL correct? |
-| Grid is empty | Database has rows? **Files** property has at least one image or video in some rows? Property names spelled exactly with capital letters? |
+| Grid is empty | Database has rows? **Content** property has at least one image or video (upload or embed link) in some rows? Property names spelled exactly with capital letters? |
 | Posts not sorting correctly | Make sure **Date** field is set for all posts. Posts are sorted by date (most recent first). |
 | Status not showing colors | Use Notion's **Status** property type (not Select). Status badges will display with colors matching Notion's status colors. |
 | Platform toggle not working | Make sure **Platform** property exists and options are exactly "instagram" or "tiktok" (lowercase). |
@@ -231,4 +231,4 @@ Use the same URL in any tool that supports embeds (iframe or embed block).
 | Pinned posts can be moved | Pinned posts should be fixed. Make sure **Pinned Placement** has values 1, 2, or 3 set. |
 | Integration not in "Connections" list | Make sure the integration was created in the **same workspace** as the database. |
 
-If you still have issues, double-check: integration token, database connection, and property names (all start with capital letters: **Name**, **Files**, **Date**, etc.).
+If you still have issues, double-check: integration token, database connection, and property names (all start with capital letters: **Name**, **Content**, **Date**, etc.).
