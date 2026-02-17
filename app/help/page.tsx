@@ -81,7 +81,7 @@ export default function HelpPage() {
                   <td><strong>Content</strong></td>
                   <td>Files &amp; media</td>
                   <td>Yes</td>
-                  <td>Upload or embed one or more images or videos per row (use Upload or Embed link in Notion). Multiple items = carousel in the grid.</td>
+                  <td>Upload one or more images or videos per row. Multiple items = carousel in the grid.</td>
                 </tr>
                 <tr>
                   <td><strong>Date</strong></td>
@@ -113,12 +113,6 @@ export default function HelpPage() {
                   <td>No</td>
                   <td>Add exactly these two options: <strong>instagram</strong> and <strong>tiktok</strong> (lowercase). Use &quot;instagram&quot; for 4:5 grid posts, &quot;tiktok&quot; for 9:16 vertical posts.</td>
                 </tr>
-                <tr>
-                  <td><strong>Source</strong></td>
-                  <td>URL or Text</td>
-                  <td>No</td>
-                  <td>Link or text (e.g. Canva link). Shown as a clickable &quot;Source&quot; link in the preview overlay. No options to add.</td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -141,7 +135,7 @@ export default function HelpPage() {
           <p className="help-note">
             <strong>Tips:</strong>
             <ul style={{ marginTop: "8px", paddingLeft: "20px" }}>
-              <li>All property names start with capital letters: <strong>Name</strong>, <strong>Content</strong>, <strong>Date</strong>, <strong>Status</strong>, <strong>Caption</strong>, <strong>Platform</strong>, <strong>Source</strong>, <strong>Pinned Placement</strong>.</li>
+              <li>All property names start with capital letters: <strong>Name</strong>, <strong>Content</strong>, <strong>Date</strong>, <strong>Status</strong>, <strong>Caption</strong>, <strong>Platform</strong>, <strong>Pinned Placement</strong>.</li>
               <li><strong>Date</strong> is required for chronological sorting. Posts are sorted by date (most recent first).</li>
               <li>Use <strong>Status</strong> (the Status type), not Select, so the widget can show colored badges.</li>
               <li>For <strong>Platform</strong>, add only &quot;instagram&quot; and &quot;tiktok&quot; (lowercase) as options.</li>
@@ -193,7 +187,7 @@ export default function HelpPage() {
           <h2>Troubleshooting</h2>
           <ul>
             <li><strong>Invalid Notion credentials:</strong> Check that the token is correct and the integration is <strong>connected</strong> to the database (Part 3).</li>
-            <li><strong>Empty grid:</strong> Make sure the database has rows and the <strong>Content</strong> property has at least one image or video (upload or embed link) in some rows.</li>
+            <li><strong>Empty grid:</strong> Make sure the database has rows and the <strong>Content</strong> property has at least one image or video in some rows.</li>
             <li><strong>Posts not sorting correctly:</strong> Make sure <strong>Date</strong> field is set for all posts. Posts are sorted by date (most recent first).</li>
             <li><strong>Status not showing:</strong> Use the <strong>Status</strong> property type (not Select) in Notion. Status badges will display with colors matching Notion&apos;s status colors.</li>
             <li><strong>Platform toggle not working:</strong> Make sure <strong>Platform</strong> property exists and options are exactly &quot;instagram&quot; or &quot;tiktok&quot; (lowercase).</li>
